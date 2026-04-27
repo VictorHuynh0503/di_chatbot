@@ -4,9 +4,6 @@
   "outputDirectory": "frontend/dist",
   "installCommand": "npm --prefix frontend install",
   "framework": "vite",
-  "env": {
-    "GOLDAPI_KEY": "@goldapi_key"
-  },
   "rewrites": [
     {
       "source": "/chat/:path*",
