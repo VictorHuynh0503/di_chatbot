@@ -6,6 +6,18 @@
   "framework": "vite",
   "rewrites": [
     {
+      "source": "/api/chat/:path*",
+      "destination": "https://di-chatbot.onrender.com/chat/:path*"
+    },
+    {
+      "source": "/api/events/:path*",
+      "destination": "https://di-chatbot.onrender.com/events/:path*"
+    },
+    {
+      "source": "/api/analyze/:path*",
+      "destination": "https://di-chatbot.onrender.com/analyze/:path*"
+    },
+    {
       "source": "/chat/:path*",
       "destination": "https://di-chatbot.onrender.com/chat/:path*"
     },
@@ -23,6 +35,57 @@
     }
   ],
   "headers": [
+    {
+      "source": "/api/chat/:path*",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type"
+        }
+      ]
+    },
+    {
+      "source": "/api/events/:path*",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type"
+        }
+      ]
+    },
+    {
+      "source": "/api/analyze/:path*",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type"
+        }
+      ]
+    },
     {
       "source": "/chat/:path*",
       "headers": [
