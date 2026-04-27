@@ -257,7 +257,7 @@ export default function App() {
 
       // If analysis was triggered, use context_data
       if (routed_intent === 'analyze') {
-        analyzedResult = context_data
+        analyzedResult = context_data as AnalyzeResult
         triggeredNodes = ['analyze']
         const pred = analyzedResult.prediction
         const top = Object.entries(analyzedResult.shap.values)
@@ -267,7 +267,7 @@ export default function App() {
           .join(', ')
         replyText = `Decision Tree analysis complete.\n\nPrediction: ${pred.toUpperCase()}\nProbabilities: ${Object.entries(analyzedResult.probabilities).map(([k, v]) => `${k}=${(v * 100).toFixed(0)}%`).join(', ')}\n\nTop SHAP factors: ${top}\n\nThe SHAP graph below shows each factor's contribution to the decision.`
       } else if (routed_intent === 'events') {
-        const evData = context_data
+        const evData = context_data as Record<string, any>
         triggeredNodes = ['events']
         const lines = evData.data.map((e: Record<string, string>) => `• ${e.name} — ${e.date} [${e.impact} impact]`).join('\n')
         replyText = `Upcoming market events:\n\n${lines}`

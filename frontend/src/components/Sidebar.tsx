@@ -152,7 +152,6 @@ export default function Sidebar({
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 position: 'relative',
-                group: 'group',
               }}
               onMouseEnter={e => {
                 if (currentSessionId !== session.id) {
