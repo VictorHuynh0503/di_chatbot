@@ -9,6 +9,7 @@ import numpy as np
 from models import ChatRequest, ChatResponse, AnalyzeRequest
 from services import predict_and_explain, build_graph, FEATURE_NAMES
 from routers.events import get_events
+from crawl_data.data import gold_latest_price, gold_historical_price
 
 router = APIRouter(tags=["Chat"])
 
@@ -23,6 +24,10 @@ def chat(req: ChatRequest):
     
     # Define intent keywords with priority (higher = higher priority)
     intents = {
+        "gold": {
+            "keywords": ["gold", "silver", "xau", "xag", "precious metal", "spot price"],
+            "priority": 3,
+        },
         "analyze": {
             "keywords": ["analyze", "decision", "shap", "factor", "buy", "sell", "recommendation", "predict"],
             "priority": 2,
@@ -49,7 +54,28 @@ def chat(req: ChatRequest):
         intent_name = selected_intent["name"]
         
         # Execute the selected endpoint
-        if intent_name == "analyze":
+        if intent_name == "gold":
+            # Get latest gold price data
+            try:
+                gold_data = gold_latest_price("XAU", "USD")
+                result = {
+                    # "metal": gold_data["metal"],
+                    # "currency": gold_data["currency"],
+                    "price": gold_data["price"],
+                    "open": gold_data["open"],
+                    "high": gold_data["high"],
+                    "low": gold_data["low"]
+                    # "change": gold_data["change"],
+                    # "change_pct": gold_data["change_pct"],
+                    # "timestamp": gold_data["timestamp"],
+                    # "unit": gold_data["unit"],
+                }
+            except Exception as e:
+                result = {
+                    "error": str(e),
+                    "message": "Failed to fetch gold price data"
+                }
+        elif intent_name == "analyze":
             # Call analyze with default parameters
             req_data = AnalyzeRequest()
             x = np.array([[req_data.vix, req_data.sentiment_score, req_data.pe_ratio,
@@ -91,6 +117,6 @@ def chat(req: ChatRequest):
         return {
             "routed_intent": None,
             "confidence": "low",
-            "message": "Could not determine intent. Ask about [analyze/decision/events/earnings/gdp]",
+            "message": "Could not determine intent. Ask about [gold/analyze/decision/events/earnings/gdp]",
             "context_data": {}
         }

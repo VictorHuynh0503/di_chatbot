@@ -23,7 +23,8 @@ const newId = () => ++msgId
 const SUGGESTIONS = [
   'Analyze market factors',
   'Show upcoming events',
-  'Should I buy or sell?',
+  'What is gold price?',
+  'Gold price yesterday',
   'Explain SHAP values',
 ]
 
@@ -270,8 +271,35 @@ export default function App() {
         triggeredNodes = ['events']
         const lines = evData.data.map((e: Record<string, string>) => `• ${e.name} — ${e.date} [${e.impact} impact]`).join('\n')
         replyText = `Upcoming market events:\n\n${lines}`
+      } else if (routed_intent === 'gold') {
+        triggeredNodes = ['gold']
+        const goldData = context_data as Record<string, any>
+        if (goldData.error) {
+          replyText = `Error fetching gold price: ${goldData.message}\n\n${goldData.error}`
+        } else {
+          const price = goldData.price ? goldData.price.toFixed(2) : 'N/A'
+          const change = goldData.change ? goldData.change.toFixed(2) : 'N/A'
+          const changePct = goldData.change_pct ? goldData.change_pct.toFixed(2) : 'N/A'
+          const open = goldData.open ? goldData.open.toFixed(2) : 'N/A'
+          const high = goldData.high ? goldData.high.toFixed(2) : 'N/A'
+          const low = goldData.low ? goldData.low.toFixed(2) : 'N/A'
+          const timestamp = goldData.timestamp ? new Date(goldData.timestamp * 1000).toLocaleString() : ''
+          
+          const isHistorical = goldData.type === 'historical'
+          const dateLabel = isHistorical ? `Date: ${goldData.date}\n` : ''
+          const titleEmoji = isHistorical ? '📅' : '💰'
+          
+          replyText = `${titleEmoji} Gold (${goldData.metal}) Price${isHistorical ? ' (Historical)' : ''}\n\n` +
+            dateLabel +
+            `Price: $${price} USD/troy oz\n` +
+            `Open: $${open}\n` +
+            `High: $${high}\n` +
+            `Low: $${low}\n` +
+            `Change: $${change} (${changePct}%)\n` +
+            (timestamp ? `Updated: ${timestamp}` : '')
+        }
       } else {
-        replyText = `I understand you're asking about: "${text}"\n\nI can help with:\n• Market factor analysis (type "analyze")\n• Upcoming events (type "events")\n• Decision intelligence explanations\n\nTry one of the suggestions below!`
+        replyText = `I understand you're asking about: "${text}"\n\nI can help with:\n• Market factor analysis (type "analyze")\n• Upcoming events (type "events")\n• Gold prices — current or historical (type "gold price" or "gold price yesterday")\n• Decision intelligence explanations\n\nTry one of the suggestions below!`
       }
 
       setMessages(prev => prev.map(m =>

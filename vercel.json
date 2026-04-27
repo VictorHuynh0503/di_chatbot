@@ -1,0 +1,58 @@
+{
+  "version": 2,
+  "buildCommand": "npm --prefix frontend run build && cp -r frontend/dist public",
+  "framework": "vite",
+  "root": ".",
+  "projects": {
+    "default": {
+      "rootDirectory": ".",
+      "buildCommand": "npm --prefix frontend run build",
+      "outputDirectory": "frontend/dist"
+    }
+  },
+  "env": {
+    "GOLDAPI_KEY": "@goldapi_key",
+    "PYTHONUNBUFFERED": "1"
+  },
+  "functions": {
+    "api/**/*.py": {
+      "runtime": "python3.11",
+      "memory": 3008,
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type"
+        }
+      ]
+    }
+  ]
+}
+

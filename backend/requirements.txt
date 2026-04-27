@@ -4,3 +4,5 @@ pydantic
 numpy
 scikit-learn
 shap
+requests
+python-dotenv
